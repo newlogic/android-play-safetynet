@@ -41,7 +41,14 @@ android {
     }
 
     defaultConfig {
-        buildConfigField("String", "API_KEY", "\"${safetynet_api_key}\"")
+        def props = new Properties()
+
+        def fileInputStream = new FileInputStream(file('../local.properties'))
+        props.load(fileInputStream)
+        fileInputStream.close()
+
+        buildConfigField('String', 'API_KEY', "\""+props.getProperty('safetynet_api_key')+"\"")
     }
+
 
 }
