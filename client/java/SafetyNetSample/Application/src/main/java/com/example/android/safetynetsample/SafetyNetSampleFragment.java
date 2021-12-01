@@ -23,6 +23,7 @@ import androidx.fragment.app.Fragment;
 import android.view.MenuItem;
 
 import com.example.android.common.logger.Log;
+import com.example.android.common.service.RetrofitClient;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
 import com.google.android.gms.safetynet.SafetyNet;
@@ -36,6 +37,10 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Random;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 
 /**
  * Sample that demonstrates the use of the SafetyNet Google Play Services API.
@@ -224,5 +229,21 @@ public class SafetyNetSampleFragment extends Fragment {
         sendIntent.putExtra(Intent.EXTRA_TEXT, mResult);
         sendIntent.setType("text/plain");
         startActivity(sendIntent);
+    }
+
+    // TODO add proper API call
+    private void verify() {
+        Call<String> call = RetrofitClient.getInstance().getVerificationApi().verify();
+        call.enqueue(new Callback<String>() {
+            @Override
+            public void onResponse(Call<String> call, Response<String> response) {
+
+            }
+
+            @Override
+            public void onFailure(Call<String> call, Throwable t) {
+
+            }
+        });
     }
 }

@@ -4,6 +4,10 @@ dependencies {
     implementation "androidx.cardview:cardview:$cardview_version"
     implementation "androidx.appcompat:appcompat:$appcompat_version"
     implementation "com.google.android.gms:play-services-safetynet:$play_services_safetynet_version"
+
+    implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
+    implementation 'com.squareup.okhttp3:okhttp:3.14.7'
 }
 
 // The sample build uses multiple directories to
@@ -24,8 +28,8 @@ android {
     }
 
     compileOptions {
-        sourceCompatibility JavaVersion.VERSION_1_7
-        targetCompatibility JavaVersion.VERSION_1_7
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
     }
 
     sourceSets {
