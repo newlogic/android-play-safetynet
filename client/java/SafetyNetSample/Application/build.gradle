@@ -6,8 +6,10 @@ dependencies {
     implementation "com.google.android.gms:play-services-safetynet:$play_services_safetynet_version"
 
     implementation 'com.squareup.retrofit2:retrofit:2.7.2'
+    implementation 'com.squareup.retrofit2:converter-scalars:2.7.2'
     implementation 'com.squareup.retrofit2:converter-gson:2.7.2'
     implementation 'com.squareup.okhttp3:okhttp:3.14.7'
+    compile 'com.github.grapesnberries:curlloggerinterceptor:0.1'
 }
 
 // The sample build uses multiple directories to
@@ -23,7 +25,7 @@ android {
 
     defaultConfig {
         applicationId "com.example.android.safetynetsample"
-        minSdkVersion 15
+        minSdkVersion 16
         targetSdkVersion 30
     }
 
@@ -54,5 +56,7 @@ android {
         buildConfigField('String', 'API_KEY', "\""+props.getProperty('safetynet_api_key')+"\"")
     }
 
-
+    testOptions {
+        execution 'ANDROIDX_TEST_ORCHESTRATOR'
+    }
 }

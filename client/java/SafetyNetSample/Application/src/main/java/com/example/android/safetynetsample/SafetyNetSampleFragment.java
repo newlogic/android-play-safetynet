@@ -17,12 +17,14 @@ package com.example.android.safetynetsample;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.view.MenuItem;
+
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
-import android.view.MenuItem;
 
 import com.example.android.common.logger.Log;
+import com.example.android.common.service.Attestation;
 import com.example.android.common.service.RetrofitClient;
 import com.google.android.gms.common.api.ApiException;
 import com.google.android.gms.common.api.CommonStatusCodes;
@@ -38,6 +40,8 @@ import java.io.IOException;
 import java.security.SecureRandom;
 import java.util.Random;
 
+import okhttp3.MediaType;
+import okhttp3.RequestBody;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -166,7 +170,7 @@ public class SafetyNetSampleFragment extends Fragment {
      * {@link com.google.android.gms.safetynet.SafetyNetApi.AttestationResponse} that contains a
      * JwsResult with the attestation result.
      */
-    private OnSuccessListener<SafetyNetApi.AttestationResponse> mSuccessListener =
+    private final OnSuccessListener<SafetyNetApi.AttestationResponse> mSuccessListener =
             new OnSuccessListener<SafetyNetApi.AttestationResponse>() {
                 @Override
                 public void onSuccess(SafetyNetApi.AttestationResponse attestationResponse) {
@@ -177,7 +181,7 @@ public class SafetyNetSampleFragment extends Fragment {
                      */
                     mResult = attestationResponse.getJwsResult();
                     Log.d(TAG, "Success! SafetyNet result:\n" + mResult + "\n");
-
+                    verify(mResult);
                         /*
                          TODO(developer): Forward this result to your server together with
                          the nonce for verification.
@@ -194,7 +198,7 @@ public class SafetyNetSampleFragment extends Fragment {
     /**
      * Called when an error occurred when communicating with the SafetyNet API.
      */
-    private OnFailureListener mFailureListener = new OnFailureListener() {
+    private final OnFailureListener mFailureListener = new OnFailureListener() {
         @Override
         public void onFailure(@NonNull Exception e) {
             // An error occurred while communicating with the service.
@@ -231,18 +235,20 @@ public class SafetyNetSampleFragment extends Fragment {
         startActivity(sendIntent);
     }
 
-    // TODO add proper API call
-    private void verify() {
-        Call<String> call = RetrofitClient.getInstance().getVerificationApi().verify();
-        call.enqueue(new Callback<String>() {
+    private void verify(String jwtResult) {
+        RequestBody requestBody = RequestBody.create(MediaType.parse("text/plain"),jwtResult);
+        Call<Attestation> call = RetrofitClient.getInstance().verificationApi().verify(requestBody);
+        call.enqueue(new Callback<Attestation>() {
             @Override
-            public void onResponse(Call<String> call, Response<String> response) {
-
+            public void onResponse(Call<Attestation> call, Response<Attestation> response) {
+                Attestation attestation = response.body();
+                Log.d(TAG, "Response from Server: "+ response);
+                Log.d(TAG, "Response Attestation: "+ attestation.toString());
             }
 
             @Override
-            public void onFailure(Call<String> call, Throwable t) {
-
+            public void onFailure(Call<Attestation> call, Throwable t) {
+                t.printStackTrace();
             }
         });
     }
